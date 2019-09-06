@@ -1,0 +1,59 @@
+version: "2"
+services:
+  nginx:
+    image: nginx:1.13
+    restart: always
+    ports:
+      - 80:80
+    group_add:
+      - www-data
+    volumes:
+      - "./etc/nginx:/etc/nginx/conf.d"
+    volumes_from:
+      - php
+    networks:
+      - default
+  php:
+    build: 
+        context: ./php-fpm
+    restart: always
+    group_add:
+      - www-data
+    volumes:
+      - "./htdocs:/var/www/html"
+      - "./var/log:/var/log"
+      - "./var/data:/var/data"
+    networks:
+      - default
+    env_file:
+      - ./php.env
+    depends_on:
+      - mariadb
+  mariadb:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3307:3306
+    expose:
+      - 3307
+    volumes:
+      - "./var/lib/mariadb:/var/lib/mysql"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pollioootoPhpmyadmin
+    restart: always
+    environment:
+      MYSQL_USER:  ${MYSQL_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_HOST: ${PMA_HOST}
+    ports:
+      - 8080:80
+    volumes:
+      - /sessions
+    depends_on:
+      - mariadb 
+  
