@@ -40,7 +40,7 @@ RUN apt-get update && \
 # FIX permission for PHP
 RUN usermod -u 1000 www-data
 
-RUN service php7.2-f pm start
+RUN service php7.2-fpm start
 
 COPY php-fpm.conf /etc/php/7.2/fpm/pool.d/www.conf
 COPY php.ini /etc/php/7.0/mods-available/php.ini
