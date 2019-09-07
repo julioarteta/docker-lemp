@@ -44,7 +44,7 @@ services:
       - "./var/lib/mariadb:/var/lib/mysql"
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: pollioootoPhpmyadmin
+    container_name: phpmyadmin
     restart: always
     environment:
       MYSQL_USER:  ${MYSQL_USER}
